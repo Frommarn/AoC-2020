@@ -21,7 +21,6 @@ def ParsePasswords(raw):
 passwords = list(map(ParsePasswords, rawData.splitlines()))
 
 # iterate over each tuple and validate it
-
 def ValidatePassword(passTuple):
     """
     Validates the password tuple according to its rules
@@ -33,8 +32,20 @@ def ValidatePassword(passTuple):
         isValid = False
     return isValid
 
+def ValidatePasswordToboggan(passTuple):
+    """
+    Validates the password tuple according to its rules
+    """
+    isFirst = passTuple.password[passTuple.lowest-1] == passTuple.char
+    isSecond = passTuple.password[passTuple.highest-1] == passTuple.char
+    if (isFirst and not isSecond) or (not isFirst and isSecond) :
+        isValid = True
+    else:
+        isValid = False
+    return isValid
+
 count = 0
 for p in passwords:
-    if ValidatePassword(p):
+    if ValidatePasswordToboggan(p):
         count = count + 1
 print("Number of valid passwords:" + str(count))
