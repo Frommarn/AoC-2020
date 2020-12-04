@@ -1,4 +1,8 @@
+import re # Regex module
+
 # read in all data
+# with open("Day 4/Testdatainvalid.txt",'r') as file:
+# with open("Day 4/Testdatavalid.txt",'r') as file:
 # with open("Day 4/Testdata.txt",'r') as file:
 with open("Day 4/Indata.txt",'r') as file:
     rawData = file.read()
@@ -68,20 +72,59 @@ class Passport(object):
         """
         Validate the Passport
         """
+        # Validate byr
         if self.byr == None:
             return False
+        if not (1920 <= int(self.byr) <= 2002 and len(self.byr) == 4):
+            return False
+
+        # Validate iyr
         if self.iyr == None:
             return False
+        if not (2010 <= int(self.iyr) <= 2020 and len(self.iyr) == 4):
+            return False
+
+        # Validate eyr
         if self.eyr == None:
             return False
+        if not (2020 <= int(self.eyr) <= 2030 and len(self.eyr) == 4):
+            return False
+
+        # Validate hgt
         if self.hgt == None:
             return False
+        hgtNr = self.hgt[:-2]
+        hgtMetric = self.hgt[-2:]
+        if not hgtNr.isdigit():
+            return False
+        if hgtMetric == 'cm' and 150 <= int(hgtNr) <= 193:
+            # All is well, continue
+            pass
+        elif hgtMetric == 'in' and 59 <= int(hgtNr) <= 76:
+            # All is well, continue
+            pass
+        else:
+            return False
+
+        # Validate hcl
         if self.hcl == None:
             return False
+        if not (self.hcl[0] == '#' and len(self.hcl) == 7 and re.fullmatch('#[0-9a-f]{6}', self.hcl)):
+            return False
+
+        # Validate ecl
         if self.ecl == None:
             return False
+        if not self.ecl in ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']:
+            return False
+
+        # Validate pid
         if self.pid == None:
             return False
+        if not (len(self.pid) == 9 and re.fullmatch('[0-9]{9}', self.pid)):
+            return False
+
+        # Validate cid (not needed)
         # if self.cid == None:
         #     return False
         return True
