@@ -41,3 +41,10 @@ for rawDataLine in rawDataLines:
 
 seatIDs.sort()
 print('Highest seat ID: ' + str(seatIDs[-1]))
+
+# Find your missing seat ID
+index = 1
+while seatIDs[index-1] == seatIDs[index]-1:
+    index += 1
+print(seatIDs[index-2:index+2])
+    
