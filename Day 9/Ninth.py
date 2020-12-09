@@ -18,10 +18,43 @@ def Validate(number, previousNumbers):
     
     return False
 
+indexOfFirstIncorrect = None
+firstIncorrectNumber = None
 for index in range(preAmble, len(numbers)):
     previousNumbers = numbers[index - preAmble:index]
     number = numbers[index]
     isOK = Validate(number, previousNumbers)
     if not isOK:
-        print(numbers[index])
+        indexOfFirstIncorrect = index
+        firstIncorrectNumber = numbers[index]
+        print('Index: ' + str(indexOfFirstIncorrect) + ', Number: ' + str(firstIncorrectNumber))
+        break
+
+def Counter(startIndex, targetSum):
+    """
+    Sum one item at a time starting from the given index until either matching targetSum (sublist of summed numbers) or exceeds it (False)
+    """
+    count = 0
+    currIndex = startIndex
+    while True:
+        count += numbers[currIndex]
+        currIndex += 1
+        if count == targetSum:
+            return numbers[startIndex:currIndex]
+        elif count > targetSum:
+            return False
+        else:
+            continue
+
+for index in range(len(numbers) - 1):
+
+    result = Counter(index, firstIncorrectNumber)
+    if result == False:
+        continue
+    else:
+        print(result)
+        result.sort()
+        print(result)
+        sum = result[0] + result[-1]
+        print(str(sum))
         break
