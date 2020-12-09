@@ -1,6 +1,7 @@
 import collections as col
 
 # with open("Day 7/Testdata.txt",'r') as file:
+# with open("Day 7/Testdata2.txt",'r') as file:
 with open("Day 7/Indata.txt",'r') as file:
     rawData = file.read()
 
@@ -30,7 +31,7 @@ for rawDataLine in rawDataLines:
             childs.append(child)
         bagDict[name] = childs
 
-
+# Part 1 solution
 # Recursively traverse each "bag tree" looking for Shiny Gold bag
 def Traverse(bagName):
     """
@@ -58,4 +59,26 @@ for bag in bagDict.keys():
         count += 1
 
 print('Number of bags eventually containing shiny gold bags: ' + str(count))
-# Profit!
+
+
+# Part 2 solution
+# Recursively traverse the "shiny gold" bag tree and count all bags
+def TraverseCount(bagName):
+    """
+    Recursive method that counts all bags in the "bag tree"
+    """
+    # Base case: Check if the current bag contains no other bags
+    if bagDict[bagName] == None:
+        return 1
+    
+    # Recursive case: Count all bags contained in this bag
+    count = 0
+    for bag in bagDict[bagName]:
+        count += bag.count * TraverseCount(bag.name)
+    
+    # Return count of all contained bags including this bag
+    return count + 1
+
+# Count all bags contained in your shiny gold bag (yours included) and then subtract your bag
+result = TraverseCount('shiny gold') - 1
+print('Number of bags in your shiny gold bag: ' + str(result))
