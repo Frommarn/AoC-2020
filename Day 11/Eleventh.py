@@ -10,6 +10,25 @@ def PrintSeats(seats):
     for row in seats:
         print(row)
 
+def LineOfSight(verticalDirection, horizontalDirection, rowIndex, index, inputSeats):
+    # Traverse to next in line
+    rowIndex += verticalDirection
+    index += horizontalDirection
+
+    # Base cases: If out of range, no seat was found
+    if rowIndex < 0 or nrOfRows <= rowIndex:
+        return False
+    if index < 0 or rowLength <= index:
+        return False
+    
+    # Recursive case: Check current seat, if '.', recurse
+    if inputSeats[rowIndex][index] == '#':
+        return True
+    elif inputSeats[rowIndex][index] == 'L':
+        return False
+    else:
+        return LineOfSight(verticalDirection, horizontalDirection, rowIndex, index, inputSeats)
+
 def CountNeighbouring(rowIndex, index, inputSeats):
     nrOfOccupied = 0
     isLeftOK = True if index - 1 >= 0 else False
@@ -18,28 +37,28 @@ def CountNeighbouring(rowIndex, index, inputSeats):
     isBottomOK = True if rowIndex + 1 < nrOfRows else False
 
     # Check top left
-    if isLeftOK and isTopOK and inputSeats[rowIndex - 1][index - 1] == '#':
+    if isLeftOK and isTopOK and LineOfSight(-1, -1, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check top middle
-    if isTopOK and inputSeats[rowIndex - 1][index] == '#':
+    if isTopOK and LineOfSight(-1, 0, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check top right
-    if isRightOK and isTopOK and inputSeats[rowIndex - 1][index + 1] == '#':
+    if isRightOK and isTopOK and LineOfSight(-1, 1, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check left
-    if isLeftOK and inputSeats[rowIndex][index - 1] == '#':
+    if isLeftOK and LineOfSight(0, -1, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check right
-    if isRightOK and inputSeats[rowIndex][index + 1] == '#':
+    if isRightOK and LineOfSight(0, 1, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check bottom left
-    if isLeftOK and isBottomOK and inputSeats[rowIndex + 1][index - 1] == '#':
+    if isLeftOK and isBottomOK and LineOfSight(1, -1, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check bottom middle
-    if isBottomOK and inputSeats[rowIndex + 1][index] == '#':
+    if isBottomOK and LineOfSight(1, 0, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     # Check bottom right
-    if isRightOK and isBottomOK and inputSeats[rowIndex + 1][index + 1] == '#':
+    if isRightOK and isBottomOK and LineOfSight(1, 1, rowIndex, index, inputSeats):
         nrOfOccupied += 1
     
     return nrOfOccupied
@@ -53,7 +72,7 @@ def Iterate(inputSeats):
             nrOfOccupied = CountNeighbouring(rowIndex, index, inputSeats)
             if currentSeat == 'L' and nrOfOccupied == 0:
                 rowResult.append('#')
-            elif currentSeat == '#' and nrOfOccupied >= 4:
+            elif currentSeat == '#' and nrOfOccupied >= 5:
                 rowResult.append('L')
             else:
                 rowResult.append(currentSeat)
@@ -69,16 +88,18 @@ def Count(inputSeats):
     return nrOfOccupied
 
 isSame = False
-iterationCount = 0
+iterationCount = 1
 while not isSame:
+    print('Iteration: ' + str(iterationCount))
+    iterationCount += 1
+    # PrintSeats(seatRows)
+
     newSeats = Iterate(seatRows)
     if newSeats == seatRows:
         isSame = True
     else:
         seatRows = newSeats
         newSeats = []
-    print('Iteration: ' + str(iterationCount))
-    iterationCount += 1
 
 count = Count(seatRows)
 print('Count: ' + str(count))
